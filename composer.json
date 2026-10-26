@@ -1,0 +1,19 @@
+{
+    "name": "nightly-works/php-upgrade-review-demo",
+    "description": "A legacy PHP 7.4 booking site that breaks on PHP 8: each break written as a test, fixed one commit at a time",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": "^7.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6"
+    },
+    "autoload": {
+        "psr-4": { "HarborTours\\": "src/" }
+    },
+    "config": {
+        "platform": { "php": "7.4.33" },
+        "sort-packages": true
+    }
+}
