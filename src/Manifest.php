@@ -12,7 +12,7 @@ class Manifest
     {
         $out = array('name;phone;adults;children;seats');
         $seats = 0;
-        while (list(, $line) = each($lines)) {
+        foreach ($lines as $line) {
             $line = trim($line);
             if ($line === '' || $line[0] === '#') {
                 continue;
@@ -20,7 +20,7 @@ class Manifest
             $fields = explode('|', $line);
             $fields[4] = (int) $fields[2] + (int) $fields[3];
             $seats += $fields[4];
-            $out[] = implode($fields, ';');
+            $out[] = implode(';', $fields);
         }
         $out[] = "total;;;;$seats";
         return implode("\n", $out);
