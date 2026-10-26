@@ -18,8 +18,8 @@ class Pricing
     {
         $total = $booking->adults * $tour['adult_cents'] + $booking->children * $tour['child_cents'];
 
-        // No voucher entered.
-        if ($booking->voucher == 0) {
+        // No voucher entered. Compared as a string: PHP 8 no longer treats "" as equal to 0.
+        if (trim((string) $booking->voucher) === '') {
             $booking->total = $total;
             return $total;
         }
