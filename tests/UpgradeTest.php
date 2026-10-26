@@ -103,6 +103,23 @@ class UpgradeTest extends TestCase
         $this->pricing()->price($booking, $this->sunset);
     }
 
+    /**
+     * A deliberate change from PHP 7.4, where "ABC" == 0 was true and such a code was silently ignored.
+     * @group changed-from-7.4
+     */
+    public function test_voucher_with_letters_is_refused_not_ignored()
+    {
+        foreach (array('ABC', '0') as $code) {
+            $booking = Booking::fromForm(array('tour' => 'sunset', 'name' => 'Anna', 'adults' => '1', 'children' => '0', 'voucher' => $code));
+            try {
+                $this->pricing()->price($booking, $this->sunset);
+                $this->fail("voucher $code was ignored");
+            } catch (\InvalidArgumentException $e) {
+                $this->assertSame("Unknown voucher $code.", $e->getMessage());
+            }
+        }
+    }
+
     public function test_form_errors()
     {
         $this->assertSame(array(), Booking::fromForm(array('name' => 'Anna', 'phone' => '+33 6 12 34 56 78', 'adults' => '1'))->errors());

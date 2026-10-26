@@ -8,11 +8,11 @@ A proof piece for PHP upgrade jobs. A fictional booking site written for this de
 | 2 | `each()` and the old `implode()` order removed: the passenger list fails | fatal | yes |
 | 3 | an empty children field in arithmetic: `TypeError` | fatal | no |
 | 4 | `"" == 0` is now false: every booking without a voucher is refused | silent | no |
-| 5 | PHP 8.1 and 8.2 deprecations (`null` to `strlen()`, dynamic property, `"${var}"`) | log noise, errors in PHP 9 | in part |
+| 5 | PHP 8.1 and 8.2 deprecations (`null` to `strlen()`, dynamic property, `"${var}"`) | log noise, slated to become errors in PHP 9 | in part |
 
 The point of the tests: PHPCompatibility, the usual scan, finds the removed functions, but not the two breaks that cost bookings.
 
-Full write-up, as a client receives it: [docs/upgrade-review.md](docs/upgrade-review.md).
+Full write-up, in the format a client would receive: [docs/upgrade-review.md](docs/upgrade-review.md).
 
 ## History
 

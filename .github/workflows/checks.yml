@@ -12,10 +12,10 @@ jobs:
           php-version: '7.4'
           coverage: none
       - name: 'The code and dependencies as delivered, with the review tests'
-        run: git checkout as-delivered -- src public composer.json composer.lock phpunit.xml
+        run: git checkout as-delivered -- src public composer.json composer.lock
       - run: composer install --no-interaction --no-progress
-      - name: 'PHP 7.4: every test passes, the site worked'
-        run: vendor/bin/phpunit
+      - name: 'PHP 7.4: every test passes, the site worked (except the test of a deliberate change)'
+        run: vendor/bin/phpunit --exclude-group changed-from-7.4
 
   as-delivered-on-php-83:
     runs-on: ubuntu-latest
@@ -33,8 +33,14 @@ jobs:
       - name: 'Static scan of the code as delivered (finds breaks 1 and 2 and the string syntax of 5, not 3 or 4)'
         run: |
           git checkout as-delivered -- src public
-          vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.3- src public || true
+          vendor/bin/phpcs -s --standard=PHPCompatibility --runtime-set testVersion 8.3- src public > scan.txt || true
           git checkout HEAD -- src public
+          cat scan.txt
+          for sniff in get_magic_quotes_gpcDeprecatedRemoved eachDeprecatedRemoved RemovedImplodeFlexibleParamOrder DeprecatedVariableSyntax; do
+            grep -q "$sniff" scan.txt || { echo "expected finding missing: $sniff"; exit 1; }
+          done
+          # Breaks 3 and 4 are runtime behaviour: the scan reports nothing in Booking.php.
+          ! grep -q "Booking.php" scan.txt
 
   fixed:
     runs-on: ubuntu-latest
