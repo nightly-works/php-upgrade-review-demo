@@ -26,7 +26,7 @@ class Pricing
 
         $code = $booking->voucher;
         if (!isset($this->vouchers[$code])) {
-            throw new \InvalidArgumentException("Unknown voucher ${code}.");
+            throw new \InvalidArgumentException("Unknown voucher {$code}.");
         }
 
         $booking->total = (int) round($total * (100 - $this->vouchers[$code]) / 100);
@@ -37,6 +37,6 @@ class Pricing
     {
         $name = $booking->name;
         $euros = number_format($booking->total / 100, 2);
-        return "Thank you ${name}! Your booking is confirmed: ${euros} EUR, to pay on board.";
+        return "Thank you {$name}! Your booking is confirmed: {$euros} EUR, to pay on board.";
     }
 }

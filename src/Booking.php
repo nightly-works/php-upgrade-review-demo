@@ -11,13 +11,15 @@ class Booking
     public $adults;
     public $children;
     public $voucher;
+    /** Price in cents once priced. Declared: PHP 8.2 deprecates properties created on the fly. */
+    public $total;
 
     public static function fromForm(array $form)
     {
         $booking = new Booking();
         $booking->tour = isset($form['tour']) ? $form['tour'] : null;
-        $booking->name = isset($form['name']) ? $form['name'] : null;
-        $booking->phone = isset($form['phone']) ? $form['phone'] : null;
+        $booking->name = isset($form['name']) ? $form['name'] : '';
+        $booking->phone = isset($form['phone']) ? $form['phone'] : '';
         // Numbers from the form: an empty or missing field counts as 0, as PHP 7.4 read it.
         $booking->adults = isset($form['adults']) ? (int) $form['adults'] : 0;
         $booking->children = isset($form['children']) ? (int) $form['children'] : 0;
