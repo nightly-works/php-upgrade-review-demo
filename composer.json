@@ -1,19 +1,30 @@
 {
     "name": "nightly-works/php-upgrade-review-demo",
-    "description": "A legacy PHP 7.4 booking site that breaks on PHP 8: each break written as a test, fixed one commit at a time",
+    "description": "Upgrade review of a legacy PHP 7.4 site to PHP 8.3: five breaks written as tests, fixed one commit at a time",
     "type": "project",
     "license": "MIT",
     "require": {
-        "php": "^7.4"
+        "php": "^8.3"
     },
     "require-dev": {
+        "phpcompatibility/php-compatibility": "^10@alpha",
         "phpunit/phpunit": "^9.6"
     },
     "autoload": {
-        "psr-4": { "HarborTours\\": "src/" }
+        "psr-4": {
+            "HarborTours\\": "src/"
+        }
     },
     "config": {
-        "platform": { "php": "7.4.33" },
-        "sort-packages": true
+        "platform": {
+            "php": "8.3.0"
+        },
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "scripts": {
+        "compat": "phpcs --standard=PHPCompatibility --runtime-set testVersion 8.3- src public"
     }
 }

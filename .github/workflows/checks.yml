@@ -1,0 +1,54 @@
+name: checks
+on: [push, pull_request]
+jobs:
+  as-delivered-on-php-74:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the as-delivered tag
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          coverage: none
+      - name: 'The code and dependencies as delivered, with the review tests'
+        run: git checkout as-delivered -- src public composer.json composer.lock phpunit.xml
+      - run: composer install --no-interaction --no-progress
+      - name: 'PHP 7.4: every test passes, the site worked'
+        run: vendor/bin/phpunit
+
+  as-delivered-on-php-83:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - run: composer install --no-interaction --no-progress
+      - name: 'PHP 8.3: each of the five breaks reproduces'
+        run: bash scripts/prove-breaks.sh
+      - name: 'Static scan of the code as delivered (finds breaks 1 and 2 and the string syntax of 5, not 3 or 4)'
+        run: |
+          git checkout as-delivered -- src public
+          vendor/bin/phpcs --standard=PHPCompatibility --runtime-set testVersion 8.3- src public || true
+          git checkout HEAD -- src public
+
+  fixed:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.3', '8.4']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+      - run: composer install --no-interaction --no-progress
+      - name: 'Fixed code: every test passes'
+        run: vendor/bin/phpunit
+      - name: 'Static scan for PHP 8.3 and later: clean'
+        run: composer compat
