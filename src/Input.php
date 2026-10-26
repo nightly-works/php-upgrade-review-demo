@@ -9,9 +9,6 @@ class Input
     {
         $clean = array();
         foreach ($input as $key => $value) {
-            if (get_magic_quotes_gpc()) {
-                $value = stripslashes($value);
-            }
             $clean[$key] = trim($value);
         }
         return $clean;
