@@ -18,8 +18,9 @@ class Booking
         $booking->tour = isset($form['tour']) ? $form['tour'] : null;
         $booking->name = isset($form['name']) ? $form['name'] : null;
         $booking->phone = isset($form['phone']) ? $form['phone'] : null;
-        $booking->adults = isset($form['adults']) ? $form['adults'] : '';
-        $booking->children = isset($form['children']) ? $form['children'] : '';
+        // Numbers from the form: an empty or missing field counts as 0, as PHP 7.4 read it.
+        $booking->adults = isset($form['adults']) ? (int) $form['adults'] : 0;
+        $booking->children = isset($form['children']) ? (int) $form['children'] : 0;
         $booking->voucher = isset($form['voucher']) ? $form['voucher'] : '';
         return $booking;
     }
